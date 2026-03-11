@@ -17,10 +17,11 @@ const getBaseUrl = () => {
   return '/'
 }
 
-// 외부 URL이면 프록시 경로로 변환
+// 외부 URL이면 공개 CORS 프록시로 변환
 const toProxySrc = (url: string) => {
   if (url.startsWith('http://') || url.startsWith('https://')) {
-    return `/proxy?url=${encodeURIComponent(url)}`
+    // 공개 CORS 프록시 사용 (GitHub Pages에서 외부 URL 로드 가능)
+    return `https://cors-anywhere.herokuapp.com/${url}`
   }
   // 상대 경로는 base URL 기준
   const base = getBaseUrl()
