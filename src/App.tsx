@@ -18,7 +18,7 @@ export default function App() {
   const [iframeUrl, setIframeUrl] = useState('/demo.html')
   const [hoverInfo, setHoverInfo] = useState<HoverInfo | null>(null)
   const iframeViewerRef = useRef<IframeViewerHandle>(null)
-  const hideTimer = useRef<ReturnType<typeof setTimeout> | undefined>()
+  const hideTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined)
   const isTooltipHoveredRef = useRef(false)
 
   const handleHover = (info: HoverInfo | null) => {
