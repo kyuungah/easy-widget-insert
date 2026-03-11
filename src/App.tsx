@@ -8,14 +8,28 @@ interface HoverInfo {
   path: string
 }
 
+// Base URL 감지 (GitHub Pages 배포 시 /easy-widget-insert/)
+const getBaseUrl = () => {
+  const pathname = window.location.pathname
+  if (pathname.includes('easy-widget-insert')) {
+    return '/easy-widget-insert/'
+  }
+  return '/'
+}
+
 // 외부 URL이면 프록시 경로로 변환
-const toProxySrc = (url: string) =>
-  url.startsWith('http://') || url.startsWith('https://')
-    ? `/proxy?url=${encodeURIComponent(url)}`
-    : url
+const toProxySrc = (url: string) => {
+  if (url.startsWith('http://') || url.startsWith('https://')) {
+    return `/proxy?url=${encodeURIComponent(url)}`
+  }
+  // 상대 경로는 base URL 기준
+  const base = getBaseUrl()
+  return base + url.replace(/^\//, '')
+}
 
 export default function App() {
-  const [iframeUrl, setIframeUrl] = useState('/demo.html')
+  const baseUrl = getBaseUrl()
+  const [iframeUrl, setIframeUrl] = useState(baseUrl + 'demo.html')
   const [hoverInfo, setHoverInfo] = useState<HoverInfo | null>(null)
   const iframeViewerRef = useRef<IframeViewerHandle>(null)
   const hideTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined)
