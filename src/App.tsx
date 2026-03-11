@@ -28,8 +28,7 @@ const toProxySrc = (url: string) => {
 }
 
 export default function App() {
-  const baseUrl = getBaseUrl()
-  const [iframeUrl, setIframeUrl] = useState(baseUrl + 'demo.html')
+  const [iframeUrl, setIframeUrl] = useState('demo.html')
   const [hoverInfo, setHoverInfo] = useState<HoverInfo | null>(null)
   const iframeViewerRef = useRef<IframeViewerHandle>(null)
   const hideTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined)
