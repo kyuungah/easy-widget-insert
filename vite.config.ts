@@ -2,13 +2,13 @@ import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 
 export default defineConfig({
-  base: '/easy-widget-insert/',
+  base: '/',
   plugins: [
     react(),
     {
       name: 'proxy-middleware',
       configureServer(server) {
-        server.middlewares.use('/proxy', async (req, res) => {
+        server.middlewares.use('/api/proxy', async (req, res) => {
           try {
             const targetUrl = new URL(`http://dummy${req.url}`).searchParams.get('url')
             if (!targetUrl) {
