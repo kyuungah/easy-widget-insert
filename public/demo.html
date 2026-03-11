@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Demo Page</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      padding: 20px;
+      margin: 0;
+      background: #f5f5f5;
+      color: #333;
+    }
+
+    header {
+      margin-bottom: 24px;
+    }
+
+    nav {
+      display: flex;
+      gap: 16px;
+      margin-bottom: 16px;
+    }
+
+    nav a {
+      color: #0066cc;
+      text-decoration: none;
+      padding: 8px 12px;
+      border-radius: 4px;
+      transition: background 0.2s;
+    }
+
+    nav a:hover {
+      background: #e6f0ff;
+    }
+
+    .container {
+      display: flex;
+      gap: 24px;
+      align-items: flex-start;
+    }
+
+    main {
+      flex: 1;
+      min-width: 0;
+    }
+
+    aside {
+      flex: 1;
+      position: sticky;
+      top: 20px;
+    }
+
+    aside img {
+      width: 100%;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    h1 {
+      color: #222;
+      margin: 0 0 24px 0;
+    }
+
+    h2 {
+      color: #333;
+      margin: 12px 0;
+      font-size: 18px;
+    }
+
+    .card {
+      background: white;
+      border: 1px solid #ddd;
+      padding: 16px;
+      margin: 12px 0;
+      border-radius: 8px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    }
+
+    .card.featured {
+      border-color: #0066cc;
+      background: #f0f8ff;
+    }
+
+    .card p {
+      margin: 0;
+      line-height: 1.6;
+    }
+
+    ul {
+      margin: 8px 0;
+      padding-left: 20px;
+    }
+
+    li {
+      margin: 6px 0;
+    }
+
+    footer {
+      margin-top: 40px;
+      padding-top: 16px;
+      border-top: 1px solid #ddd;
+      font-size: 12px;
+      color: #666;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <nav>
+      <a href="#">홈</a>
+      <a href="#">소개</a>
+      <a href="#">문서</a>
+    </nav>
+  </header>
+
+  <div class="container">
+    <main id="main">
+      <h1>DOM Inspector 데모 페이지</h1>
+
+    <section class="card featured">
+      <h2>사용법</h2>
+      <ul>
+        <li>쉬운 배너 삽입 데모입니다.</li>
+        <li>헤더쪽 URL에 테스트를 하려는 URL을 넣고, 이동을 눌러주세요.</li>
+        <li>이동하려는 URL에 넣어진 초록색 banner를 전부 지우려면 헤더의 초기화를 눌러주세요.</li>
+        <li>삽입을 원하는 dom 요소의 툴팁의 버튼을 눌러주면 banner가 삽입됩니다.</li>
+      </ul>
+    </section>
+
+    <section class="card">
+      <h2>첫 번째 카드</h2>
+      <p>이것은 일반적인 카드 컴포넌트입니다. 이 요소 위에 마우스를 호버하면 하이라이트와 DOM 경로가 표시됩니다.</p>
+    </section>
+
+    <section class="card featured">
+      <h2>특집 카드</h2>
+      <p>이 카드는 여러 클래스를 가지고 있습니다: <code>.card.featured</code></p>
+      <ul>
+        <li>항목 1</li>
+        <li>항목 2</li>
+        <li id="special-item">항목 3 (ID 포함)</li>
+      </ul>
+    </section>
+
+    <section class="card">
+      <h2>깊은 중첩 구조</h2>
+      <div>
+        <div>
+          <p>이 단락은 여러 단계로 중첩되어 있습니다.</p>
+        </div>
+      </div>
+    </section>
+
+    <article class="card">
+      <h2>다양한 요소 테스트</h2>
+      <p>
+        이것은 <span>인라인 요소</span>를 포함하는 단락입니다.
+      </p>
+      <button style="padding: 8px 12px; background: #0066cc; color: white; border: none; border-radius: 4px; cursor: pointer;">
+        버튼
+      </button>
+    </article>
+    </main>
+
+    <aside>
+      <img src="/demomo.png" alt="DOM Inspector 데모 화면" />
+    </aside>
+  </div>
+
+  <footer>
+    <span>&copy; 2024 DOM Inspector Demo</span>
+  </footer>
+</body>
+</html>
