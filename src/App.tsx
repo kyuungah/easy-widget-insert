@@ -20,8 +20,8 @@ const getBaseUrl = () => {
 // 외부 URL이면 공개 CORS 프록시로 변환
 const toProxySrc = (url: string) => {
   if (url.startsWith('http://') || url.startsWith('https://')) {
-    // 공개 CORS 프록시 사용 (GitHub Pages에서 외부 URL 로드 가능)
-    return `https://cors-anywhere.herokuapp.com/${url}`
+    // thingproxy.freeboard.io - 안정적인 공개 프록시
+    return `https://thingproxy.freeboard.io/fetch/${url}`
   }
   // 상대 경로는 base URL 기준
   const base = getBaseUrl()
