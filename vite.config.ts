@@ -1,8 +1,15 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
-import iconv from 'iconv-lite'
 
 declare const Buffer: any
+
+// iconv-lite를 선택적으로 로드 (Vercel 빌드 환경에서 미사용)
+let iconv: any = null
+try {
+  iconv = require('iconv-lite')
+} catch (e) {
+  // iconv not available in build environment
+}
 
 function extractCharset(contentType: string, rawHtml: string): string {
   // 1. Content-Type 헤더에서 추출
@@ -50,27 +57,32 @@ export default defineConfig({
             console.log('[proxy] Detected charset:', charset)
             console.log('[proxy] Buffer size:', buffer.byteLength)
 
-            // iconv-lite로 실제 charset 디코딩
+            // 실제 charset으로 디코딩
             let body: string
-            try {
-              body = iconv.decode(Buffer.from(buffer), charset)
-              console.log('[proxy] Decoded successfully with charset:', charset)
-              console.log('[proxy] Decoded body length:', body.length)
-
-              // 한글 텍스트가 있는 부분 찾기
-              const titleMatch = body.match(/<title[^>]*>([\s\S]*?)<\/title>/i)
-              if (titleMatch) {
-                console.log('[proxy] Title:', titleMatch[1])
+            if (iconv && charset !== 'utf-8') {
+              try {
+                body = iconv.decode(Buffer.from(buffer), charset)
+                console.log('[proxy] Decoded successfully with iconv-lite:', charset)
+              } catch (error) {
+                console.log('[proxy] iconv decode error, falling back to UTF-8:', error)
+                body = new TextDecoder('utf-8').decode(buffer)
               }
+            } else {
+              // iconv not available or charset is utf-8, use TextDecoder
+              body = new TextDecoder(charset !== 'utf-8' ? 'utf-8' : charset).decode(buffer)
+              console.log('[proxy] Decoded with TextDecoder (iconv not available)')
+            }
+            console.log('[proxy] Decoded body length:', body.length)
 
-              const h1Match = body.match(/<h1[^>]*>([\s\S]*?)<\/h1>/i)
-              if (h1Match) {
-                console.log('[proxy] H1:', h1Match[1])
-              }
-            } catch (error) {
-              // charset 지원 안 되면 UTF-8 fallback
-              console.log('[proxy] Decode error, falling back to UTF-8:', error)
-              body = new TextDecoder('utf-8').decode(buffer)
+            // 한글 텍스트가 있는 부분 찾기
+            const titleMatch = body.match(/<title[^>]*>([\s\S]*?)<\/title>/i)
+            if (titleMatch) {
+              console.log('[proxy] Title:', titleMatch[1])
+            }
+
+            const h1Match = body.match(/<h1[^>]*>([\s\S]*?)<\/h1>/i)
+            if (h1Match) {
+              console.log('[proxy] H1:', h1Match[1])
             }
 
             if (contentType.includes('text/html')) {
