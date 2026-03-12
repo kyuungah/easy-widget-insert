@@ -39,6 +39,22 @@ export default function Header({ url, onNavigate, onReload }: HeaderProps) {
         gap: 12,
       }}
     >
+       <button
+        onClick={()=> window.location.reload()}
+        style={{
+          padding: '6px 12px',
+          background: '#3b82f6',
+          color: 'white',
+          border: 'none',
+          borderRadius: 4,
+          cursor: 'pointer',
+          fontSize: 13,
+          fontWeight: 500,
+          whiteSpace: 'nowrap',
+        }}
+      >
+        초기 페이지로 이동 (cmd+r)
+      </button>
       <span style={{ color: '#888', whiteSpace: 'nowrap' }}>URL:</span>
       <input
         type="text"
@@ -94,7 +110,7 @@ export default function Header({ url, onNavigate, onReload }: HeaderProps) {
           whiteSpace: 'nowrap',
         }}
       >
-        초기화
+        삽입된 위젯 전부 삭제
       </button>
     </header>
   )
