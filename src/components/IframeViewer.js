@@ -7,23 +7,85 @@ const HIGHLIGHT_STYLE = `
     background-color: rgba(255, 255, 0, 0.3) !important;
   }
 `;
+const DUMMY_PRODUCTS = [
+    { id: 1, name: '블루 반팔 티셔츠', price: 29000 },
+    { id: 2, name: '화이트 린넨 셔츠', price: 45000 },
+    { id: 3, name: '슬림핏 청바지', price: 59000 },
+    { id: 4, name: '스트라이프 맨투맨', price: 39000 },
+    { id: 5, name: '베이지 후드집업', price: 65000 },
+    { id: 6, name: '블랙 슬랙스', price: 52000 },
+    { id: 7, name: '레드 맨투맨', price: 35000 },
+    { id: 8, name: '그린 셔츠', price: 42000 },
+    { id: 9, name: '네이비 후드티', price: 58000 },
+    { id: 10, name: '베이지 카디건', price: 62000 },
+    { id: 11, name: '화이트 청바지', price: 55000 },
+    { id: 12, name: '블랙 후드집업', price: 68000 },
+];
 function createBannerElement(doc) {
-    const el = doc.createElement('div');
-    el.style.cssText = `
+    const wrapper = doc.createElement('div');
+    wrapper.style.cssText = `
     width: 100%;
-    height: 200px;
-    background-color: #22c55e;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: white;
-    font-size: 24px;
-    font-weight: bold;
-    font-family: sans-serif;
+    background: #f8f8f8;
+    border: 1px solid #e0e0e0;
+    padding: 12px;
     box-sizing: border-box;
+    font-family: sans-serif;
   `;
-    el.textContent = 'banner';
-    return el;
+    const title = doc.createElement('div');
+    title.textContent = '추천 상품';
+    title.style.cssText = `
+    font-size: 13px;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 10px;
+  `;
+    wrapper.appendChild(title);
+    const list = doc.createElement('div');
+    list.style.cssText = `
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 8px;
+    overflow: hidden;
+  `;
+    DUMMY_PRODUCTS.forEach(product => {
+        const card = doc.createElement('div');
+        card.style.cssText = `
+      width: 100px;
+      flex-shrink: 0;
+    `;
+        const img = doc.createElement('div');
+        img.style.cssText = `
+      width: 100px;
+      height: 100px;
+      background: #e5e5e5;
+      border-radius: 4px;
+    `;
+        const name = doc.createElement('div');
+        name.textContent = product.name;
+        name.style.cssText = `
+      width: 100px;
+      font-size: 11px;
+      color: #333;
+      margin-top: 4px;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    `;
+        const price = doc.createElement('div');
+        price.textContent = product.price.toLocaleString() + '원';
+        price.style.cssText = `
+      font-size: 11px;
+      font-weight: bold;
+      color: #111;
+      margin-top: 2px;
+    `;
+        card.appendChild(img);
+        card.appendChild(name);
+        card.appendChild(price);
+        list.appendChild(card);
+    });
+    wrapper.appendChild(list);
+    return wrapper;
 }
 function getDomPath(element) {
     const parts = [];
