@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import Header from './components/Header'
 import IframeViewer, { IframeViewerHandle } from './components/IframeViewer'
 
@@ -22,6 +22,17 @@ export default function App() {
   const iframeViewerRef = useRef<IframeViewerHandle>(null)
   const hideTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined)
   const isTooltipHoveredRef = useRef(false)
+
+  // iframe 내부에서 postMessage로 URL이 전달되면 처리
+  useEffect(() => {
+    const handler = (event: MessageEvent) => {
+      if (event.data?.type === 'navigate' && typeof event.data.url === 'string') {
+        setIframeUrl(event.data.url)
+      }
+    }
+    window.addEventListener('message', handler)
+    return () => window.removeEventListener('message', handler)
+  }, [])
 
   const handleHover = (info: HoverInfo | null) => {
     // 툴팁 hover 상태에서는 새로운 요소의 hover를 무시

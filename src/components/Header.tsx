@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 
 interface HeaderProps {
   url: string
@@ -8,6 +8,10 @@ interface HeaderProps {
 
 export default function Header({ url, onNavigate, onReload }: HeaderProps) {
   const [inputValue, setInputValue] = useState(url)
+
+  useEffect(() => {
+    setInputValue(url)
+  }, [url])
 
   const handleSubmit = () => {
     if (inputValue.trim()) {

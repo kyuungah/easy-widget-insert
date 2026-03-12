@@ -171,6 +171,11 @@ const IframeViewer = forwardRef<IframeViewerHandle, IframeViewerProps>(
         return
       }
 
+      // no-inspect 클래스가 있는 영역은 호버 무시
+      if ((target as Element).closest?.('.no-inspect')) {
+        return
+      }
+
       // 툴팁 hover 중이면 하이라이트 변경 안 함
       if (isTooltipHoveredRef?.current) {
         return

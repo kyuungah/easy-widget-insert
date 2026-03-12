@@ -133,39 +133,41 @@
       </ul>
     </section>
 
-    <section class="card">
-      <h2>첫 번째 카드</h2>
-      <p>이것은 일반적인 카드 컴포넌트입니다. 이 요소 위에 마우스를 호버하면 하이라이트와 DOM 경로가 표시됩니다.</p>
-    </section>
-
-    <section class="card featured">
-      <h2>특집 카드</h2>
-      <p>이 카드는 여러 클래스를 가지고 있습니다: <code>.card.featured</code></p>
+    <section class="card no-inspect">
+      <h2>메이크샵 - 마틸라</h2>
       <ul>
-        <li>항목 1</li>
-        <li>항목 2</li>
-        <li id="special-item">항목 3 (ID 포함)</li>
+        <li><a href="#" onclick="navigateTo('https://maatila.co.kr/')">메인 페이지</a></li>
+        <li><a href="#" onclick="navigateTo('https://maatila.co.kr/shop/basket.html')">장바구니 페이지</a></li>
+        <li><a href="#" onclick="navigateTo('https://maatila.co.kr/shop/shopdetail.html?branduid=1137455')">상품 상세 페이지</a></li>
       </ul>
     </section>
 
-    <section class="card">
-      <h2>깊은 중첩 구조</h2>
-      <div>
-        <div>
-          <p>이 단락은 여러 단계로 중첩되어 있습니다.</p>
-        </div>
-      </div>
+    <section class="card no-inspect">
+      <h2>카페24 - 안다르</h2>
+      <ul>
+        <li><a href="#" onclick="navigateTo('https://andar.co.kr/')">메인 페이지</a></li>
+        <li><a href="#" onclick="navigateTo('https://andar.co.kr/order/basket.html')">장바구니 페이지</a></li>
+        <li><a href="#" onclick="navigateTo('https://andar.co.kr/product/%EC%BB%B4%ED%8F%AC%ED%8A%B8-%ED%94%84%EB%A0%88%EC%8B%9C-%EC%98%A4%EB%B2%84%ED%95%8F-%EC%85%94%EC%B8%A0/11988/category/2030/')">상품 상세 페이지</a></li>
+      </ul>
     </section>
 
-    <article class="card">
-      <h2>다양한 요소 테스트</h2>
-      <p>
-        이것은 <span>인라인 요소</span>를 포함하는 단락입니다.
-      </p>
-      <button style="padding: 8px 12px; background: #0066cc; color: white; border: none; border-radius: 4px; cursor: pointer;">
-        버튼
-      </button>
-    </article>
+    <section class="card no-inspect">
+      <h2>아임웹 - 무무네</h2>
+      <ul>
+        <li><a href="#" onclick="navigateTo('https://mumune.com/')">메인 페이지</a></li>
+        <li><a href="#" onclick="navigateTo('https://mumune.com/shop_cart')">장바구니 페이지</a></li>
+        <li><a href="#" onclick="navigateTo('https://mumune.com/shop_view/?idx=146')">상품 상세 페이지</a></li>
+      </ul>
+    </section>
+
+    <section class="card no-inspect">
+      <h2>독립몰 - 아뜨랑스</h2>
+      <ul>
+        <li><a href="#" onclick="navigateTo('https://www.attrangs.co.kr/')">메인 페이지</a></li>
+        <li><a href="#" onclick="navigateTo('https://www.attrangs.co.kr/member/cart.php')">장바구니 페이지</a></li>
+        <li><a href="#" onclick="navigateTo('https://www.attrangs.co.kr/shop/view.php?index_no=38557')">상품 상세 페이지</a></li>
+      </ul>
+    </section>
     </main>
 
     <aside>
@@ -176,5 +178,28 @@
   <footer>
     <span>&copy; 2024 DOM Inspector Demo</span>
   </footer>
+
+  <script>
+    function navigateTo(url) {
+      window.parent.postMessage({ type: 'navigate', url }, '*')
+      return false
+    }
+
+    // 링크 스타일 지정
+    document.addEventListener('DOMContentLoaded', () => {
+      const links = document.querySelectorAll('a[onclick*="navigateTo"]')
+      links.forEach(link => {
+        link.style.color = '#0066cc'
+        link.style.textDecoration = 'none'
+        link.style.cursor = 'pointer'
+        link.addEventListener('mouseenter', () => {
+          link.style.textDecoration = 'underline'
+        })
+        link.addEventListener('mouseleave', () => {
+          link.style.textDecoration = 'none'
+        })
+      })
+    })
+  </script>
 </body>
 </html>
