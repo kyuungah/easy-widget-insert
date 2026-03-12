@@ -3,14 +3,6 @@ import react from '@vitejs/plugin-react'
 
 declare const Buffer: any
 
-// iconv-lite를 선택적으로 로드 (Vercel 빌드 환경에서 미사용)
-let iconv: any = null
-try {
-  iconv = require('iconv-lite')
-} catch (e) {
-  // iconv not available in build environment
-}
-
 function extractCharset(contentType: string, rawHtml: string): string {
   // 1. Content-Type 헤더에서 추출
   const ctMatch = contentType.match(/charset=([^\s;]+)/i)
@@ -30,7 +22,17 @@ export default defineConfig({
     react(),
     {
       name: 'proxy-middleware',
-      configureServer(server) {
+      async configureServer(server) {
+        // iconv-lite를 async로 동적 import (ESM 환경 대응)
+        let iconv: any = null
+        try {
+          const mod = await import('iconv-lite')
+          iconv = mod.default ?? mod
+          console.log('[vite-proxy] iconv-lite loaded successfully')
+        } catch (e) {
+          console.warn('[vite-proxy] iconv-lite not available:', e)
+        }
+
         server.middlewares.use('/api/proxy', async (req, res) => {
           try {
             const targetUrl = new URL(`http://dummy${req.url}`).searchParams.get('url')
@@ -67,10 +69,18 @@ export default defineConfig({
                 console.log('[proxy] iconv decode error, falling back to UTF-8:', error)
                 body = new TextDecoder('utf-8').decode(buffer)
               }
+            } else if (charset !== 'utf-8' && !iconv) {
+              // iconv not available but charset is not utf-8 - text may be garbled
+              console.warn(
+                '[proxy] Warning: iconv-lite not available, cannot decode',
+                charset,
+                '- text may be garbled. Run: yarn add -D iconv-lite'
+              )
+              body = new TextDecoder('utf-8').decode(buffer)
             } else {
-              // iconv not available or charset is utf-8, use TextDecoder
-              body = new TextDecoder(charset !== 'utf-8' ? 'utf-8' : charset).decode(buffer)
-              console.log('[proxy] Decoded with TextDecoder (iconv not available)')
+              // charset is utf-8, use TextDecoder
+              body = new TextDecoder('utf-8').decode(buffer)
+              console.log('[proxy] Decoded with TextDecoder (charset=utf-8)')
             }
             console.log('[proxy] Decoded body length:', body.length)
 

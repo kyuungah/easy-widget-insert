@@ -8,7 +8,6 @@ interface HoverInfo {
   path: string
 }
 
-// 외부 URL이면 Express 프록시로 변환
 const toProxySrc = (url: string) => {
   if (url.startsWith('http://') || url.startsWith('https://')) {
     return `/api/proxy?url=${encodeURIComponent(url)}`
@@ -23,7 +22,6 @@ export default function App() {
   const hideTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined)
   const isTooltipHoveredRef = useRef(false)
 
-  // iframe 내부에서 postMessage로 URL이 전달되면 처리
   useEffect(() => {
     const handler = (event: MessageEvent) => {
       if (event.data?.type === 'navigate' && typeof event.data.url === 'string') {
@@ -35,11 +33,7 @@ export default function App() {
   }, [])
 
   const handleHover = (info: HoverInfo | null) => {
-    // 툴팁 hover 상태에서는 새로운 요소의 hover를 무시
-    if (isTooltipHoveredRef.current && info !== null) {
-      return
-    }
-
+    if (isTooltipHoveredRef.current && info !== null) return
     if (info) {
       clearTimeout(hideTimer.current)
       setHoverInfo(info)
@@ -72,68 +66,83 @@ export default function App() {
         isTooltipHoveredRef={isTooltipHoveredRef}
       />
 
-      {/* Tooltip: 부모 React 앱 레이어에서 렌더링 */}
       {hoverInfo && (
         <div
           style={{
             position: 'fixed',
-            top: hoverInfo.y,
+            top: hoverInfo.y - 80,
             left: hoverInfo.x,
             transform: 'translateX(-50%)',
-            width: 200,
-            background: 'white',
-            border: '1px solid #ccc',
-            borderRadius: 4,
-            padding: '8px',
-            fontSize: 12,
-            fontFamily: 'monospace',
-            pointerEvents: 'auto',
+            pointerEvents: 'none',
             zIndex: 9999,
-            boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
-          }}
-          onMouseEnter={() => {
-            clearTimeout(hideTimer.current)
-            isTooltipHoveredRef.current = true
-          }}
-          onMouseMove={() => clearTimeout(hideTimer.current)}
-          onMouseLeave={() => {
-            isTooltipHoveredRef.current = false
-            iframeViewerRef.current?.clearHighlight()
-            setHoverInfo(null)
           }}
         >
-          <div style={{ marginBottom: 6, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-            {hoverInfo.path}
-          </div>
-          <div style={{ display: 'flex', gap: 4 }}>
-            <button
-              onClick={() => iframeViewerRef.current?.insertBefore()}
-              style={{
-                padding: '4px 8px',
-                fontSize: 11,
-                background: '#3b82f6',
-                color: 'white',
-                border: 'none',
-                borderRadius: 3,
-                cursor: 'pointer',
-              }}
-            >
-              이전에 삽입
-            </button>
-            <button
-              onClick={() => iframeViewerRef.current?.insertAfter()}
-              style={{
-                padding: '4px 8px',
-                fontSize: 11,
-                background: '#10b981',
-                color: 'white',
-                border: 'none',
-                borderRadius: 3,
-                cursor: 'pointer',
-              }}
-            >
-              이후에 삽입
-            </button>
+          <div
+            style={{
+              width: 200,
+              background: 'white',
+              border: '1px solid #ccc',
+              borderRadius: 4,
+              padding: '8px',
+              fontSize: 12,
+              fontFamily: 'monospace',
+              pointerEvents: 'auto',
+              boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
+            }}
+            onMouseEnter={() => {
+              clearTimeout(hideTimer.current)
+              isTooltipHoveredRef.current = true
+            }}
+            onMouseMove={() => clearTimeout(hideTimer.current)}
+            onMouseLeave={() => {
+              isTooltipHoveredRef.current = false
+              iframeViewerRef.current?.clearHighlight()
+              setHoverInfo(null)
+            }}
+          >
+            <div style={{ marginBottom: 6, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+              {hoverInfo.path}
+            </div>
+            <div style={{ display: 'flex', gap: 4 }}>
+              <button
+                onClick={() => {
+                  iframeViewerRef.current?.insertBefore()
+                  iframeViewerRef.current?.clearHighlight()
+                  isTooltipHoveredRef.current = false
+                  setHoverInfo(null)
+                }}
+                style={{
+                  padding: '4px 8px',
+                  fontSize: 11,
+                  background: '#3b82f6',
+                  color: 'white',
+                  border: 'none',
+                  borderRadius: 3,
+                  cursor: 'pointer',
+                }}
+              >
+                이전에 삽입
+              </button>
+              <button
+                onClick={() => {
+                  iframeViewerRef.current?.insertAfter()
+                  iframeViewerRef.current?.clearHighlight()
+                  isTooltipHoveredRef.current = false
+                  setHoverInfo(null)
+                }}
+                style={{
+                  padding: '4px 8px',
+                  fontSize: 11,
+                  background: '#10b981',
+                  color: 'white',
+                  border: 'none',
+                  borderRadius: 3,
+                  cursor: 'pointer',
+                }}
+              >
+                이후에 삽입
+              </button>
+            </div>
           </div>
         </div>
       )}
