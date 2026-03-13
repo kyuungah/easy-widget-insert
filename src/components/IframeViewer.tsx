@@ -174,7 +174,7 @@ const IframeViewer = forwardRef<IframeViewerHandle, IframeViewerProps>(
           if (!pendingEvent) return
 
           const event = pendingEvent
-          const target = event.target as Element
+          const target = (doc.elementFromPoint(event.clientX, event.clientY) ?? event.target) as Element
 
           if (target === doc.body || target === doc.documentElement) return
           if (target.closest?.('.no-inspect')) return

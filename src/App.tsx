@@ -70,9 +70,9 @@ export default function App() {
         <div
           style={{
             position: 'fixed',
-            top: hoverInfo.y - 80,
-            left: hoverInfo.x,
-            transform: 'translateX(-50%)',
+            top: hoverInfo.y - 10,
+            left: hoverInfo.x + 15,
+            transform: 'none',
             pointerEvents: 'none',
             zIndex: 9999,
           }}
