@@ -10,6 +10,7 @@ interface IframeViewerProps {
   src: string
   onHover: (info: HoverInfo | null) => void
   isTooltipHoveredRef?: MutableRefObject<boolean>
+  mobile?: boolean
 }
 
 export interface IframeViewerHandle {
@@ -42,7 +43,10 @@ const DUMMY_PRODUCTS = [
   { id: 12, name: '블랙 후드집업', price: 68000 },
 ]
 
-function createBannerElement(doc: Document): HTMLElement {
+function createBannerElement(doc: Document, mobile = false): HTMLElement {
+  const imgSize = mobile ? 50 : 100
+  const cardWidth = mobile ? 50 : 100
+
   const wrapper = doc.createElement('div')
   wrapper.style.cssText = `
     width: 100%;
@@ -74,14 +78,14 @@ function createBannerElement(doc: Document): HTMLElement {
   DUMMY_PRODUCTS.forEach(product => {
     const card = doc.createElement('div')
     card.style.cssText = `
-      width: 100px;
+      width: ${cardWidth}px;
       flex-shrink: 0;
     `
 
     const img = doc.createElement('div')
     img.style.cssText = `
-      width: 100px;
-      height: 100px;
+      width: ${imgSize}px;
+      height: ${imgSize}px;
       background: #e5e5e5;
       border-radius: 4px;
     `
@@ -89,7 +93,7 @@ function createBannerElement(doc: Document): HTMLElement {
     const name = doc.createElement('div')
     name.textContent = product.name
     name.style.cssText = `
-      width: 100px;
+      width: ${cardWidth}px;
       font-size: 11px;
       color: #333;
       margin-top: 4px;
@@ -142,7 +146,7 @@ function getDomPath(element: Element): string {
 }
 
 const IframeViewer = forwardRef<IframeViewerHandle, IframeViewerProps>(
-  ({ src, onHover, isTooltipHoveredRef }, ref) => {
+  ({ src, onHover, isTooltipHoveredRef, mobile }, ref) => {
     const iframeRef = useRef<HTMLIFrameElement>(null)
     const prevHighlightedRef = useRef<Element | null>(null)
     const currentHoveredRef = useRef<Element | null>(null)
@@ -232,13 +236,13 @@ const IframeViewer = forwardRef<IframeViewerHandle, IframeViewerProps>(
       insertBefore: () => {
         const el = currentHoveredRef.current
         if (!el || !iframeRef.current?.contentDocument) return
-        const banner = createBannerElement(iframeRef.current.contentDocument)
+        const banner = createBannerElement(iframeRef.current.contentDocument, mobile)
         el.parentElement?.insertBefore(banner, el)
       },
       insertAfter: () => {
         const el = currentHoveredRef.current
         if (!el || !iframeRef.current?.contentDocument) return
-        const banner = createBannerElement(iframeRef.current.contentDocument)
+        const banner = createBannerElement(iframeRef.current.contentDocument, mobile)
         el.insertAdjacentElement('afterend', banner)
       },
       clearHighlight: () => {
@@ -259,10 +263,11 @@ const IframeViewer = forwardRef<IframeViewerHandle, IframeViewerProps>(
         src={src}
         onLoad={onLoadHandler}
         style={{
-          flex: 1,
           border: 'none',
           display: 'block',
           width: '100%',
+          height: '100%',
+          background: 'white',
         }}
         title="Demo iframe"
       />

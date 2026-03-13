@@ -15,14 +15,18 @@ function extractCharset(contentType: string, rawHtml: string): string {
 }
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
-  const { url } = req.query
+  const { url, mobile } = req.query
   if (!url || typeof url !== 'string') {
     return res.status(400).send('Missing url parameter')
   }
 
+  const userAgent = mobile === '1'
+    ? 'Mozilla/5.0 (iPhone; CPU iPhone OS 16_0 like Mac OS X) AppleWebKit/605.1.15 Mobile/15E148 Safari/604.1'
+    : 'Mozilla/5.0 (compatible)'
+
   try {
     const response = await fetch(url, {
-      headers: { 'User-Agent': 'Mozilla/5.0 (compatible)' },
+      headers: { 'User-Agent': userAgent },
       redirect: 'follow',
     })
 

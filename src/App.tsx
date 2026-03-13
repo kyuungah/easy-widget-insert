@@ -8,15 +8,16 @@ interface HoverInfo {
   path: string
 }
 
-const toProxySrc = (url: string) => {
+const toProxySrc = (url: string, mobile = false) => {
   if (url.startsWith('http://') || url.startsWith('https://')) {
-    return `/api/proxy?url=${encodeURIComponent(url)}`
+    return `/api/proxy?url=${encodeURIComponent(url)}${mobile ? '&mobile=1' : ''}`
   }
   return url
 }
 
 export default function App() {
   const [iframeUrl, setIframeUrl] = useState('demo.html')
+  const [viewMode, setViewMode] = useState<'pc' | 'mobile'>('pc')
   const [hoverInfo, setHoverInfo] = useState<HoverInfo | null>(null)
   const iframeViewerRef = useRef<IframeViewerHandle>(null)
   const hideTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined)
@@ -49,6 +50,11 @@ export default function App() {
     iframeViewerRef.current?.reload()
   }
 
+  const handleViewModeChange = (mode: 'pc' | 'mobile') => {
+    setViewMode(mode)
+    iframeViewerRef.current?.reload()
+  }
+
   return (
     <div
       style={{
@@ -58,13 +64,40 @@ export default function App() {
         position: 'relative',
       }}
     >
-      <Header url={iframeUrl} onNavigate={setIframeUrl} onReload={handleReload} />
-      <IframeViewer
-        ref={iframeViewerRef}
-        src={toProxySrc(iframeUrl)}
-        onHover={handleHover}
-        isTooltipHoveredRef={isTooltipHoveredRef}
+      <Header
+        url={iframeUrl}
+        onNavigate={setIframeUrl}
+        onReload={handleReload}
+        viewMode={viewMode}
+        onViewModeChange={handleViewModeChange}
       />
+
+      <div
+        style={{
+          flex: 1,
+          overflow: 'hidden',
+          display: 'flex',
+          justifyContent: viewMode === 'mobile' ? 'center' : 'stretch',
+          background: viewMode === 'mobile' ? '#d1d5db' : 'transparent',
+        }}
+      >
+        <div
+          style={{
+            width: viewMode === 'mobile' ? 480 : '100%',
+            height: '100%',
+            overflow: 'hidden',
+            flexShrink: 0,
+          }}
+        >
+          <IframeViewer
+            ref={iframeViewerRef}
+            src={toProxySrc(iframeUrl, viewMode === 'mobile')}
+            onHover={handleHover}
+            isTooltipHoveredRef={isTooltipHoveredRef}
+            mobile={viewMode === 'mobile'}
+          />
+        </div>
+      </div>
 
       {hoverInfo && (
         <div

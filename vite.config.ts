@@ -35,15 +35,21 @@ export default defineConfig({
 
         server.middlewares.use('/api/proxy', async (req, res) => {
           try {
-            const targetUrl = new URL(`http://dummy${req.url}`).searchParams.get('url')
+            const params = new URL(`http://dummy${req.url}`).searchParams
+            const targetUrl = params.get('url')
             if (!targetUrl) {
               res.statusCode = 400
               res.end('Missing url parameter')
               return
             }
 
+            const mobile = params.get('mobile') === '1'
+            const userAgent = mobile
+              ? 'Mozilla/5.0 (iPhone; CPU iPhone OS 16_0 like Mac OS X) AppleWebKit/605.1.15 Mobile/15E148 Safari/604.1'
+              : 'Mozilla/5.0 (compatible)'
+
             const response = await fetch(targetUrl, {
-              headers: { 'User-Agent': 'Mozilla/5.0 (compatible)' },
+              headers: { 'User-Agent': userAgent },
               redirect: 'follow',
             })
 
